@@ -2,12 +2,12 @@
 #it will create all resources described in main.tf
 
 #########variables
-PeojectID="roi-takeoff-user72"
+ProjectID="roi-takeoff-user72"
 ##################
 if [ $GOOGLE_CLOUD_PROJECT == "" ]; then
-	export GOOGLE_CLOUD_PROJECT=$PeojectID
+	export GOOGLE_CLOUD_PROJECT=$ProjectID
 fi
-echo "projectID="$GOOGLE_CLOUD_PROJECT
+echo "ProjectID ="$GOOGLE_CLOUD_PROJECT
 
 gcloud builds submit --tag gcr.io/$GOOGLE_CLOUD_PROJECT/level1v2
 

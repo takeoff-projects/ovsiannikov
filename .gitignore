@@ -18,7 +18,7 @@ level1/terraform.tfstate
 level1/terraform.tfstate.backup
 level1/go-pets
 level1/.terraform.lock.hcl
-
+.idea
 # Dependency directories (remove the comment below to include it)
 vendor/
 level1/tmp/

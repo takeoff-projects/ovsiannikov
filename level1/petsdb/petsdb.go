@@ -19,7 +19,7 @@ type Pet struct {
 	Added   time.Time `datastore:"added"`
 	Caption string    `datastore:"caption"`
 	Email   string    `datastore:"email"`
-	Image   string    `datastore:"image"`
+	Image   string    `datastore:"image,noindex"`
 	Likes   int       `datastore:"likes"`
 	Owner   string    `datastore:"owner"`
 	Petname string    `datastore:"petname"`
@@ -58,12 +58,8 @@ func GetPets() ([]Pet, error) {
 	return pets, nil
 }
 
-func PutPet(Owner string, petName string){
+func PutPet(pet Pet){
     id := uuid.New()
-    newPet := Pet{
-       Petname: petName,
-       Owner: Owner,
-    }
     projectID = os.Getenv("GOOGLE_CLOUD_PROJECT")
     if projectID == "" {
         log.Fatal(`You need to set the environment variable "GOOGLE_CLOUD_PROJECT"`)
@@ -76,11 +72,31 @@ func PutPet(Owner string, petName string){
     }
 
     k := datastore.NameKey("Pet", "Pet" + id.String(), nil)
-    _, err = client.Put(ctx, k, &newPet)
+    _, err = client.Put(ctx, k, &pet)
     if err != nil {
         fmt.Println(err)
     }
 
-    log.Println("new Pet:", newPet)
+    log.Println("new Pet:", pet)
+    client.Close()
+}
+
+func DeletePet(petId string){
+    projectID = os.Getenv("GOOGLE_CLOUD_PROJECT")
+    if projectID == "" {
+        log.Fatal(`You need to set the environment variable "GOOGLE_CLOUD_PROJECT"`)
+    }
+
+    ctx := context.Background()
+    client, err := datastore.NewClient(ctx, projectID)
+    if err != nil {
+        log.Fatalf("Could not create datastore client: %v", err)
+    }
+
+    key := datastore.NameKey("Pet", petId, nil)
+    if err := client.Delete(ctx, key); err != nil {
+        log.Fatalf("Could not delete item: %v", err)
+    }
+    log.Println("deleted pet with id:", petId)
     client.Close()
 }

@@ -10,7 +10,7 @@
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
-
+level1/.terraform.tfstate.lock.info
 level1/.idea/
 level1/.terraform/
 level1/tf/

@@ -1,7 +1,7 @@
 // Settings for the google cloud account
 // Write the path to the json key giving access to the project
 provider "google" {
-  credentials = file("tf/roi-takeoff-user72-f77e2019b057.json")
+  credentials = file("tf/45ca3eec03e5.json")
   project = "roi-takeoff-user72"
   region  = "europe-central2"
   zone    = "europe-central2"
@@ -28,8 +28,27 @@ resource "google_cloud_run_service" "default" {
     latest_revision = true
   }
 }
+# Set service public
+data "google_iam_policy" "noauth" {
+  binding {
+    role = "roles/run.invoker"
+    members = [
+      "allUsers",
+    ]
+  }
+}
 
-//Resource 2: create datastore index
+//Resource 2: create noauth iam policy
+resource "google_cloud_run_service_iam_policy" "noauth" {
+  location = google_cloud_run_service.default.location
+  project  = google_cloud_run_service.default.project
+  service  = google_cloud_run_service.default.name
+
+  policy_data = data.google_iam_policy.noauth.policy_data
+  depends_on  = [google_cloud_run_service.default]
+}
+
+//Resource 3: create datastore index
 resource "google_datastore_index" "default" {
   kind = "Pet"
   properties {

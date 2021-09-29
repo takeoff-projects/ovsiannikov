@@ -1,6 +1,7 @@
 package main
 
 import (
+    "encoding/json"
 	"bytes"
 	"fmt"
 	"html/template"
@@ -9,6 +10,10 @@ import (
 	"os"
 	"drehnstrom.com/go-pets/petsdb"
 )
+
+type deletePet struct {
+	PetId string
+}
 
 var projectID string 
 
@@ -37,16 +42,48 @@ func main() {
 	mux.HandleFunc("/about", aboutHandler)
 	mux.HandleFunc("/add", addHandler)
 
+    mux.HandleFunc("/api/add", apiAddPetHandler)
+    mux.HandleFunc("/api/delete", apiDeletePetHandler)
 
 	log.Printf("Webserver listening on Port: %s", port)
 	http.ListenAndServe(":"+port, mux)
 }
-	
-func indexHandler(w http.ResponseWriter, r *http.Request) {
+
+func apiAddPetHandler(w http.ResponseWriter, r *http.Request) {
     if r.Method == "POST"{
-        log.Println("[INFO] Add Pet")
-        petsdb.PutPet(r.FormValue("Owner"), r.FormValue("petName"))
+        var pet petsdb.Pet
+        err := json.NewDecoder(r.Body).Decode(&pet)
+        if err != nil {
+            fmt.Print(err)
+        }
+        log.Println("[INFO] Add Pet ", pet)
+        petsdb.PutPet(pet)
+    }else{
+        http.Error(w, "Bad request to api/add endpoint, it supports only POST", http.StatusInternalServerError)
+        log.Println("Bad request to api/add endpoint, it supports only POST")
+        return
     }
+}
+//curl -d '{"petId":"Pet750f0c2e-1c34-41d5-ace7-894108931230"}' -H "Content-Type: application/json" -X POST http://localhost:8080/api/delete
+//curl -X POST http://localhost:8080/api/delete
+func apiDeletePetHandler(w http.ResponseWriter, r *http.Request) {
+    var pet deletePet
+    err := json.NewDecoder(r.Body).Decode(&pet)
+    log.Println(pet)
+    if err != nil {
+        fmt.Print(err)
+    }
+    if r.Method == "POST"{
+        log.Println("[INFO] Delete Pet with id: ", pet.PetId)
+        petsdb.DeletePet(pet.PetId)
+    }else{
+        http.Error(w, "Bad request to api/delete endpoint, it supports only POST", http.StatusInternalServerError)
+        log.Println("Bad request to api/delete endpoint, it supports only POST")
+        return
+    }
+}
+
+func indexHandler(w http.ResponseWriter, r *http.Request) {
 	var pets []petsdb.Pet
 	pets, error := petsdb.GetPets()
 	if error != nil {

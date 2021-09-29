@@ -10,15 +10,15 @@
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
-level1/.terraform.tfstate.lock.info
-level1/.idea/
-level1/.terraform/
-level1/tf/
-level1/terraform.tfstate
-level1/terraform.tfstate.backup
-level1/go-pets
-level1/.terraform.lock.hcl
+level1-2/.terraform.tfstate.lock.info
+level1-2/.idea/
+level1-2/.terraform/
+level1-2/tf/
+level1-2/terraform.tfstate
+level1-2/terraform.tfstate.backup
+level1-2/go-pets
+level1-2/.terraform.lock.hcl
 .idea
 # Dependency directories (remove the comment below to include it)
 vendor/
-level1/tmp/
+level1-2/tmp/

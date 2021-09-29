@@ -16,3 +16,5 @@ gcloud builds submit --tag gcr.io/$GOOGLE_CLOUD_PROJECT/level1v2
 #gcloud datastore databases create --region=us-central
 terraform init && terraform apply -auto-approve
 
+gcloud endpoints services deploy openapi-run.yaml
+

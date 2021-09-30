@@ -6,9 +6,9 @@ Website where you can add Pets :)
 ### Build and deploy app
 Run up.sh script in **level1-2** directory using:
 
->./up.sh
+>./start_my_app.sh
 
 ### Destroy all resources
 Run down.sh script in **level1-2** directory using:
 
->./down.sh
+>./stop_my_app.sh
